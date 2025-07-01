@@ -1,13 +1,9 @@
-import Login from "./components/Login"
-import Register from "./components/Register"
+import * as React from "react";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { routeTree } from "./routeTree.gen";
 
-function App() {
+const router = createRouter({ routeTree });
 
-  return (
-    <>
-    <Register />
-    </>
-  )
+export default function App() {
+  return <RouterProvider router={router} />;
 }
-
-export default App

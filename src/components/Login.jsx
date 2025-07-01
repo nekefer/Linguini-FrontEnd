@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { loginUser, googleLogin } from "../api/auth";
 import "../styles/Login.css";
-import { loginUser } from "../api/auth";
 
-function Login({ onLogin }) {
+export default function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -12,12 +12,12 @@ function Login({ onLogin }) {
     setError("");
     try {
       const data = await loginUser(email, password);
-      localStorage.setItem("token", data.access_token);
-      onLogin && onLogin(data);
+      console.log("Login successful:", data);
+      localStorage.setItem("token", data.access_token); // Store JWT
+
+      onLogin && onLogin();
     } catch (err) {
-      setError(
-        err.response?.data?.detail || "Invalid credentials"
-      );
+      setError(err.response?.data?.detail || "Login failed");
     }
   };
 
@@ -25,10 +25,14 @@ function Login({ onLogin }) {
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>Login</h2>
-        {error && <div className="error">{error}</div>}
+        {error && (
+          <div className="error" style={{ color: "red" }}>
+            {error}
+          </div>
+        )}
         <input
-          type="text"
-          placeholder="email"
+          type="email"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -41,9 +45,10 @@ function Login({ onLogin }) {
           required
         />
         <button type="submit">Login</button>
+        <button type="button" onClick={googleLogin} style={{ marginLeft: 8 }}>
+          Login with Google
+        </button>
       </form>
     </div>
   );
 }
-
-export default Login;
