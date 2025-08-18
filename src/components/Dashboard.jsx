@@ -38,25 +38,14 @@ export default function Dashboard() {
   };
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div style={{ color: "red" }}>{error}</div>;
+  if (error) return <div className="error">{error}</div>;
   if (!user) return <div>No user data available</div>;
 
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+    <div className="container">
+      <div>
         <h2>Welcome, {user.first_name}!</h2>
-        <button
-          onClick={handleLogout}
-          style={{ padding: "8px 16px", cursor: "pointer" }}
-        >
-          Logout
-        </button>
+        <button onClick={handleLogout}>Logout</button>
       </div>
       <p>This is your dashboard.</p>
       <div>

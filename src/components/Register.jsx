@@ -47,9 +47,7 @@ export default function Register({ onRegister }) {
     <div className="register-container">
       <form className="register-form" onSubmit={handleSubmit}>
         <h2>Register</h2>
-        {error && (
-          <div style={{ color: "red", marginBottom: "16px" }}>{error}</div>
-        )}
+        {error && <div className="error">{error}</div>}
         <input
           name="email"
           type="email"
@@ -57,7 +55,6 @@ export default function Register({ onRegister }) {
           value={form.email}
           onChange={handleChange}
           required
-          style={{ marginBottom: "12px", padding: "8px", width: "100%" }}
         />
         <input
           name="first_name"
@@ -65,7 +62,6 @@ export default function Register({ onRegister }) {
           value={form.first_name}
           onChange={handleChange}
           required
-          style={{ marginBottom: "12px", padding: "8px", width: "100%" }}
         />
         <input
           name="last_name"
@@ -73,7 +69,6 @@ export default function Register({ onRegister }) {
           value={form.last_name}
           onChange={handleChange}
           required
-          style={{ marginBottom: "12px", padding: "8px", width: "100%" }}
         />
         <input
           name="password"
@@ -82,45 +77,14 @@ export default function Register({ onRegister }) {
           value={form.password}
           onChange={handleChange}
           required
-          style={{ marginBottom: "16px", padding: "8px", width: "100%" }}
         />
-        <button
-          type="submit"
-          style={{ padding: "10px 20px", marginBottom: "16px", width: "100%" }}
-        >
-          Register
-        </button>
-
-        {/* ✅ Add Google OAuth registration */}
-        <button
-          type="button"
-          onClick={googleRegister}
-          style={{
-            padding: "10px 20px",
-            marginBottom: "16px",
-            width: "100%",
-            backgroundColor: "#4285f4",
-            color: "white",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
+        <button type="submit">Register</button>
+        <button type="button" onClick={googleRegister}>
           Register with Google
         </button>
-
-        <div style={{ textAlign: "center" }}>
+        <div>
           <span>Already have an account? </span>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/login" })}
-            style={{
-              background: "none",
-              border: "none",
-              color: "blue",
-              textDecoration: "underline",
-              cursor: "pointer",
-            }}
-          >
+          <button type="button" onClick={() => navigate({ to: "/login" })}>
             Login here
           </button>
         </div>

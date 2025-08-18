@@ -1,5 +1,68 @@
-*, ::after, ::before {
+/* Basic Reset */
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
+}
+
+/* Basic Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Basic Button Styles */
+button {
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background-color: #f0f0f0;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Basic Input Styles */
+input {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    width: 100%;
+}
+
+input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* Basic Form Styles */
+form {
+    margin: 20px 0;
+}
+
+/* Basic Error Styles */
+.error {
+    color: #dc3545;
+    margin: 10px 0;
+}
+
+/* Basic Success Styles */
+.success {
+    color: #28a745;
+    margin: 10px 0;
 }

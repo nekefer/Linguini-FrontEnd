@@ -43,11 +43,7 @@ export default function Login({ onLogin }) {
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>Login</h2>
-        {error && (
-          <div className="error" style={{ color: "red" }}>
-            {error}
-          </div>
-        )}
+        {error && <div className="error">{error}</div>}
         <input
           type="email"
           placeholder="Email"
@@ -63,22 +59,12 @@ export default function Login({ onLogin }) {
           required
         />
         <button type="submit">Login</button>
-        <button type="button" onClick={googleLogin} style={{ marginLeft: 8 }}>
+        <button type="button" onClick={googleLogin}>
           Continue with Google
         </button>
-        <div style={{ marginTop: "16px", textAlign: "center" }}>
+        <div>
           <span>Don't have an account? </span>
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/register" })}
-            style={{
-              background: "none",
-              border: "none",
-              color: "blue",
-              textDecoration: "underline",
-              cursor: "pointer",
-            }}
-          >
+          <button type="button" onClick={() => navigate({ to: "/register" })}>
             Register here
           </button>
         </div>
