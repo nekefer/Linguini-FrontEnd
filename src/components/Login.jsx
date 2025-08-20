@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { loginUser, googleLogin } from "../api/auth";
+import React, { useState, useEffect, useRef } from "react";
+import { loginUser, googleLogin, checkGoogleSignInState } from "../api/auth";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import "../styles/Login.css";
 
@@ -7,6 +7,7 @@ export default function Login({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const googleCheckInProgress = useRef(false);
   const navigate = useNavigate();
   const search = useSearch({ from: "/login" });
 
@@ -22,6 +23,32 @@ export default function Login({ onLogin }) {
       }
     }
   }, [search]);
+
+  // ✅ Check Google sign-in state on component mount
+  useEffect(() => {
+    const checkGoogleState = async () => {
+      // Prevent multiple checks
+      if (googleCheckInProgress.current) {
+        return;
+      }
+
+      googleCheckInProgress.current = true;
+
+      try {
+        const hasGoogleSession = await checkGoogleSignInState();
+        if (hasGoogleSession) {
+          // Automatically trigger Google login
+          googleLogin();
+        }
+      } catch (error) {
+        console.error("Error checking Google state:", error);
+      } finally {
+        googleCheckInProgress.current = false;
+      }
+    };
+
+    checkGoogleState();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,7 +70,11 @@ export default function Login({ onLogin }) {
     <div className="login-container">
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>Login</h2>
-        {error && <div className="error">{error}</div>}
+        {error && (
+          <div className="error" style={{ color: "red" }}>
+            {error}
+          </div>
+        )}
         <input
           type="email"
           placeholder="Email"
@@ -59,12 +90,22 @@ export default function Login({ onLogin }) {
           required
         />
         <button type="submit">Login</button>
-        <button type="button" onClick={googleLogin}>
+        <button type="button" onClick={googleLogin} style={{ marginLeft: 8 }}>
           Continue with Google
         </button>
-        <div>
+        <div style={{ marginTop: "16px", textAlign: "center" }}>
           <span>Don't have an account? </span>
-          <button type="button" onClick={() => navigate({ to: "/register" })}>
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/register" })}
+            style={{
+              background: "none",
+              border: "none",
+              color: "blue",
+              textDecoration: "underline",
+              cursor: "pointer",
+            }}
+          >
             Register here
           </button>
         </div>
