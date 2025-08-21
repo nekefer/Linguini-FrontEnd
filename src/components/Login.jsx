@@ -10,12 +10,10 @@ export default function Login({ onLogin }) {
   const navigate = useNavigate();
   const search = useSearch({ from: "/login" });
 
-  // ✅ Handle error messages from URL params (e.g., from Google OAuth redirects)
+  // ✅ Handle error messages from URL params (only OAuth failures now)
   useEffect(() => {
     if (search?.error) {
-      if (search.error === "user_exists") {
-        setError("This email is already registered. Please login instead.");
-      } else if (search.error === "oauth_failed") {
+      if (search.error === "oauth_failed") {
         setError("Google authentication failed. Please try again.");
       } else {
         setError("Authentication failed. Please try again.");

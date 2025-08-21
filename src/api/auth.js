@@ -21,13 +21,13 @@ export const loginUser = async (email, password) => {
   return response.data;
 };
 
-// ✅ Google OAuth with intent parameter
+// 🎯 Unified Google OAuth - automatically handles registration and login
 export const googleLogin = () => {
-  window.location.href = `${API_URL}/auth/google/login?intent=login`;
+  window.location.href = `${API_URL}/auth/google/login`;
 };
 
 export const googleRegister = () => {
-  window.location.href = `${API_URL}/auth/google/login?intent=register`;
+  window.location.href = `${API_URL}/auth/google/login`;
 };
 
 // ✅ Updated to use cookies instead of localStorage
