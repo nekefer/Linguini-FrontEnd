@@ -9,8 +9,10 @@ export default function Register({ onRegister }) {
     first_name: "",
     last_name: "",
     password: "",
+    confirmPassword: "", // ✅ Added password confirmation
   });
   const [error, setError] = useState("");
+  const [passwordError, setPasswordError] = useState(""); // ✅ Specific password validation
   const navigate = useNavigate();
   const search = useSearch({ from: "/register" });
 
@@ -25,15 +27,43 @@ export default function Register({ onRegister }) {
     }
   }, [search]);
 
-  const handleChange = (e) =>
+  // ✅ Real-time password validation
+  useEffect(() => {
+    if (form.confirmPassword && form.password !== form.confirmPassword) {
+      setPasswordError("Passwords do not match");
+    } else {
+      setPasswordError("");
+    }
+  }, [form.password, form.confirmPassword]);
+
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    // Clear general error when user starts typing
+    if (error) setError("");
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setPasswordError("");
+
+    // ✅ Client-side validation before sending to server
+    if (form.password !== form.confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
+
+    if (form.password.length < 8) {
+      setPasswordError("Password must be at least 8 characters long");
+      return;
+    }
+
     try {
-      await registerUser(form);
-      // ✅ Redirect to welcome page after successful registration
+      // Remove confirmPassword before sending to server
+      const { confirmPassword: _confirmPassword, ...registrationData } = form;
+      await registerUser(registrationData);
+
+      // ✅ Redirect to dashboard after successful registration
       navigate({ to: "/dashboard" });
       onRegister && onRegister();
     } catch (err) {
@@ -71,12 +101,48 @@ export default function Register({ onRegister }) {
         <input
           name="password"
           type="password"
-          placeholder="Password"
+          placeholder="Password (min 8 characters)"
           value={form.password}
           onChange={handleChange}
           required
+          minLength={8}
         />
-        <button type="submit">Register</button>
+
+        {/* ✅ NEW: Password confirmation field */}
+        <input
+          name="confirmPassword"
+          type="password"
+          placeholder="Confirm Password"
+          value={form.confirmPassword}
+          onChange={handleChange}
+          required
+          className={passwordError ? "error-input" : ""}
+        />
+
+        {/* ✅ Password validation feedback */}
+        {passwordError && (
+          <div
+            className="password-error"
+            style={{
+              color: "#dc3545",
+              fontSize: "0.875rem",
+              marginBottom: "10px",
+            }}
+          >
+            {passwordError}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={!!passwordError || !form.password || !form.confirmPassword}
+        >
+          Register
+        </button>
+
+        <div style={{ margin: "16px 0", textAlign: "center", color: "#666" }}>
+          or
+        </div>
         <button type="button" onClick={googleRegister}>
           Register with Google
         </button>
