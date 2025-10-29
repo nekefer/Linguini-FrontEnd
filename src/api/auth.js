@@ -21,13 +21,13 @@ export const loginUser = async (email, password) => {
   return response.data;
 };
 
-// ✅ Google OAuth with intent parameter
+// 🎯 Unified Google OAuth - automatically handles registration and login
 export const googleLogin = () => {
-  window.location.href = `${API_URL}/auth/google/login?intent=login`;
+  window.location.href = `${API_URL}/auth/google/login`;
 };
 
 export const googleRegister = () => {
-  window.location.href = `${API_URL}/auth/google/login?intent=register`;
+  window.location.href = `${API_URL}/auth/google/login`;
 };
 
 // ✅ Updated to use cookies instead of localStorage
@@ -45,5 +45,11 @@ export const logoutUser = async () => {
 // ✅ Add refresh token function
 export const refreshToken = async () => {
   const response = await axios.post(`${API_URL}/auth/refresh`);
+  return response.data;
+};
+
+// ✅ SECURE: Fetch last liked video - backend reads Google token from HttpOnly cookie
+export const getLastLikedVideo = async () => {
+  const response = await axios.get(`${API_URL}/youtube/last-liked-video`);
   return response.data;
 };
