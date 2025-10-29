@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { fetchUserInfo, logoutUser, refreshToken } from "../api/auth";
 
 const AuthContext = createContext();
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   // Check if user is authenticated on app start
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -50,7 +50,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const login = (userData) => {
     setUser(userData);
@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
   // Check auth on mount
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   const value = {
     user,

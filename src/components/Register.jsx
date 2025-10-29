@@ -132,14 +132,7 @@ export const Register = () => {
           />
           {/* ✅ Password validation feedback */}
           {passwordError && (
-            <div
-              className="password-error"
-              style={{
-                color: "#dc3545",
-                fontSize: "0.875rem",
-                marginBottom: "10px",
-              }}
-            >
+            <div className="password-error">
               {passwordError}
             </div>
           )}

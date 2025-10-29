@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
-import { getLastLikedVideo } from "../api/auth";
+import { getLastLikedVideo, googleLogin } from "../api/auth";
 import "../styles/Dashboard.css";
 
 export const Dashboard = () => {
@@ -85,10 +85,7 @@ export const Dashboard = () => {
             {user.auth_method !== "google" && user.auth_method !== "both" && (
               <button
                 className="google-signin-button"
-                onClick={() =>
-                  (window.location.href =
-                    "http://localhost:8000/auth/google/login")
-                }
+                onClick={googleLogin}
               >
                 Sign in with Google to view YouTube data
               </button>
@@ -108,7 +105,7 @@ export const Dashboard = () => {
             <div className="video-details">
               <h4>{lastLikedVideo.title}</h4>
               <p className="video-description">
-                {lastLikedVideo.description.substring(0, 200)}...
+                {lastLikedVideo.description?.substring(0, 200) ?? "No description"}...
               </p>
               <a
                 href={`https://www.youtube.com/watch?v=${lastLikedVideo.video_id}`}
