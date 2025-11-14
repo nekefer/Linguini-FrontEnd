@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
-import { getLastLikedVideo, googleLogin } from "../api/auth";
+import { googleLogin } from "../api/auth";
+import { getLastLikedVideo } from "../api/youtube";
+import useTrendingStore from "../stores/trendingStore";
+import VideoCard from "./VideoCard";
 import "../styles/Dashboard.css";
 
 export const Dashboard = () => {
@@ -10,6 +13,10 @@ export const Dashboard = () => {
   const [lastLikedVideo, setLastLikedVideo] = useState(null);
   const [videoLoading, setVideoLoading] = useState(true);
   const [videoError, setVideoError] = useState(null);
+
+  // Trending videos from Zustand store
+  const { videos, loading, error, hasMore, fetchTrending, loadMore } =
+    useTrendingStore();
 
   const handleLogout = async () => {
     await logout();
@@ -31,6 +38,11 @@ export const Dashboard = () => {
       setVideoLoading(false);
     }
   };
+
+  useEffect(() => {
+    // Fetch trending videos on mount
+    fetchTrending({ reset: true });
+  }, [fetchTrending]);
 
   useEffect(() => {
     // Only fetch if user is authenticated with Google
@@ -69,6 +81,41 @@ export const Dashboard = () => {
         )}
       </div>
 
+      {/* Trending Videos Section */}
+      <div className="trending-section">
+        <h3>🔥 Trending Videos</h3>
+
+        {loading && videos.length === 0 && (
+          <div className="loading-message">Loading trending videos...</div>
+        )}
+
+        {error && (
+          <div className="error-message">
+            <p>{error}</p>
+          </div>
+        )}
+
+        {videos.length > 0 && (
+          <>
+            <div className="video-grid">
+              {videos.map((video) => (
+                <VideoCard key={video.video_id} video={video} />
+              ))}
+            </div>
+
+            {hasMore && (
+              <button
+                className="load-more-button"
+                onClick={loadMore}
+                disabled={loading}
+              >
+                {loading ? "Loading..." : "Load More"}
+              </button>
+            )}
+          </>
+        )}
+      </div>
+
       {/* Last Liked Video Section */}
       <div className="video-section">
         <h3>Your Last Liked Video</h3>
@@ -83,10 +130,7 @@ export const Dashboard = () => {
           <div className="error-message">
             <p>{videoError}</p>
             {user.auth_method !== "google" && user.auth_method !== "both" && (
-              <button
-                className="google-signin-button"
-                onClick={googleLogin}
-              >
+              <button className="google-signin-button" onClick={googleLogin}>
                 Sign in with Google to view YouTube data
               </button>
             )}
@@ -105,7 +149,9 @@ export const Dashboard = () => {
             <div className="video-details">
               <h4>{lastLikedVideo.title}</h4>
               <p className="video-description">
-                {lastLikedVideo.description?.substring(0, 200) ?? "No description"}...
+                {lastLikedVideo.description?.substring(0, 200) ??
+                  "No description"}
+                ...
               </p>
               <a
                 href={`https://www.youtube.com/watch?v=${lastLikedVideo.video_id}`}
