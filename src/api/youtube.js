@@ -42,3 +42,18 @@ export const getLastLikedVideo = async () => {
   const response = await axios.get(`${API_URL}/youtube/last-liked-video`);
   return response.data;
 };
+
+/**
+ * Fetch captions for a YouTube video.
+ * PUBLIC endpoint - no authentication required.
+ *
+ * @param {string} videoId - YouTube video ID
+ * @param {string} language - Language code (default: 'en')
+ * @returns {Promise<Object>} Response with video_id, language, captions[]
+ */
+export const getCaptions = async (videoId, language = "en") => {
+  const response = await axios.get(`${API_URL}/youtube/${videoId}/captions`, {
+    params: { language },
+  });
+  return response.data;
+};

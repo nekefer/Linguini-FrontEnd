@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "@tanstack/react-router";
 import "../styles/VideoCard.css";
 
 /**
@@ -6,6 +7,7 @@ import "../styles/VideoCard.css";
  * Displays a single trending video with thumbnail, title, channel, and metadata.
  */
 const VideoCard = ({ video, onClick }) => {
+  const navigate = useNavigate();
   const { video_id, title, thumbnails, channel_title, published_at } = video;
 
   // Get the best available thumbnail
@@ -33,8 +35,8 @@ const VideoCard = ({ video, onClick }) => {
     if (onClick) {
       onClick(video);
     } else {
-      // Default: open YouTube video in new tab
-      window.open(`https://www.youtube.com/watch?v=${video_id}`, "_blank");
+      // Navigate to player page (prepare for Milestone 3)
+      navigate({ to: `/player/${video_id}` });
     }
   };
 

@@ -14,9 +14,17 @@ export const Dashboard = () => {
   const [videoLoading, setVideoLoading] = useState(true);
   const [videoError, setVideoError] = useState(null);
 
-  // Trending videos from Zustand store
-  const { videos, loading, error, hasMore, fetchTrending, loadMore } =
-    useTrendingStore();
+  // Trending videos from Zustand store (with region persistence)
+  const {
+    videos,
+    loading,
+    error,
+    hasMore,
+    region,
+    fetchTrending,
+    loadMore,
+    changeRegion,
+  } = useTrendingStore();
 
   const handleLogout = async () => {
     await logout();
@@ -40,9 +48,12 @@ export const Dashboard = () => {
   };
 
   useEffect(() => {
-    // Fetch trending videos on mount
-    fetchTrending({ reset: true });
-  }, [fetchTrending]);
+    // Fetch trending videos on mount only if we don't have videos
+    // This preserves region and videos when navigating back
+    if (videos.length === 0) {
+      fetchTrending({ region, reset: true });
+    }
+  }, [fetchTrending, region, videos.length]);
 
   useEffect(() => {
     // Only fetch if user is authenticated with Google
@@ -83,7 +94,31 @@ export const Dashboard = () => {
 
       {/* Trending Videos Section */}
       <div className="trending-section">
-        <h3>🔥 Trending Videos</h3>
+        <div className="trending-header">
+          <h3>🔥 Trending Videos</h3>
+
+          <div className="filters">
+            <label>
+              Region:
+              <select
+                value={region}
+                onChange={(e) => changeRegion(e.target.value)}
+                className="region-select"
+              >
+                <option value="US">🇺🇸 United States</option>
+                <option value="GB">🇬🇧 United Kingdom</option>
+                <option value="CA">🇨🇦 Canada</option>
+                <option value="AU">🇦🇺 Australia</option>
+                <option value="DE">🇩🇪 Germany</option>
+                <option value="FR">🇫🇷 France</option>
+                <option value="JP">🇯🇵 Japan</option>
+                <option value="KR">🇰🇷 South Korea</option>
+                <option value="IN">🇮🇳 India</option>
+                <option value="BR">🇧🇷 Brazil</option>
+              </select>
+            </label>
+          </div>
+        </div>
 
         {loading && videos.length === 0 && (
           <div className="loading-message">Loading trending videos...</div>
