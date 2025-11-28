@@ -1,0 +1,254 @@
+/* VideoPlayer.css - Video player page styling */
+
+.video-player-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+  color: #fff;
+}
+
+.player-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background-color: #1a1a1a;
+  border-bottom: 1px solid #333;
+}
+
+.back-button {
+  background: #333;
+  border: none;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background: #555;
+}
+
+.video-title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.video-player-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  height: calc(100vh - 80px); /* Subtract nav height */
+}
+
+.player-section {
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.caption-section {
+  background: #1a1a1a;
+  border-radius: 8px;
+  border: 1px solid #333;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* YouTube Player Container */
+.youtube-player-container {
+  flex: 1;
+  position: relative;
+  background: #000;
+}
+
+.youtube-player {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Caption Panel Styles */
+.caption-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+
+.caption-header {
+  padding: 1rem;
+  border-bottom: 1px solid #333;
+  background: #222;
+}
+
+.caption-header h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.caption-info {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.caption-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.caption-item {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.caption-item:hover {
+  background: #333;
+  border-color: #555;
+}
+
+.caption-item.active {
+  background: #2563eb;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.caption-timestamp {
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-bottom: 0.25rem;
+  font-family: 'Courier New', monospace;
+}
+
+.caption-item.active .caption-timestamp {
+  color: #bfdbfe;
+}
+
+.caption-text {
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.caption-word {
+  padding: 1px 2px;
+  border-radius: 2px;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.caption-word:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.caption-item.active .caption-word:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Loading and Error States */
+.caption-loading,
+.caption-error,
+.caption-empty {
+  padding: 2rem;
+  text-align: center;
+  color: #aaa;
+  font-style: italic;
+}
+
+.caption-error {
+  color: #ef4444;
+}
+
+.retry-button {
+  background: #ef4444;
+  border: none;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.retry-button:hover {
+  background: #dc2626;
+}
+
+/* Mobile Responsive Layout */
+@media (max-width: 768px) {
+  .video-player-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  
+  .player-nav {
+    padding: 1rem;
+  }
+  
+  .video-title {
+    font-size: 1rem;
+  }
+  
+  .caption-section {
+    max-height: 40vh;
+  }
+  
+  .caption-header {
+    padding: 0.75rem;
+  }
+  
+  .caption-item {
+    padding: 0.5rem;
+  }
+}
+
+/* Tablet Layout */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .video-player-layout {
+    grid-template-columns: 1.5fr 1fr;
+  }
+  
+  .player-nav {
+    padding: 1rem 1.5rem;
+  }
+}
+
+/* Custom Scrollbar for Caption List */
+.caption-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.caption-list::-webkit-scrollbar-track {
+  background: #333;
+  border-radius: 3px;
+}
+
+.caption-list::-webkit-scrollbar-thumb {
+  background: #666;
+  border-radius: 3px;
+}
+
+.caption-list::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
