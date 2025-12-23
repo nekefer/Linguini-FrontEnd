@@ -20,24 +20,6 @@ class DictionaryService {
       throw new Error("Word must be a non-empty string");
     }
 
-    // if(word.toLowerCase().match(/^([a-z]+)'([a-z]+)$/)){
-    //     console.log("Word with apostrophe detected:", word);
-    //     return null; // Skip words with apostrophes
-    // }
-    // console.log("Checking for apostrophe-like characters in word:", word);
-
-    // if (/[’'‹›`´]/.test('I\'ll')) {
-    //     console.log("Apostrophe-like character detected:", word);
-    //     return null;
-    // }
-
-    // Clean and normalize the word
-    // const cleanWord = word.toLowerCase().trim().replace(/[^\w]/g, "");
-    // console.log("Cleaned word for lookup:", cleanWord);
-
-    // if (!cleanWord) {
-    //   throw new Error("Invalid word format");
-    // }
 
     // Check cache first
     if (this.cache.has(word)) {

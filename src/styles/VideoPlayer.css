@@ -47,7 +47,8 @@
   grid-template-columns: 2fr 1fr;
   gap: 1rem;
   padding: 1rem;
-  height: calc(100vh - 80px); /* Subtract nav height */
+  height: calc(100vh - 80px);
+  /* Subtract nav height */
 }
 
 .player-section {
@@ -119,6 +120,23 @@
   border: 1px solid transparent;
   transition: all 0.2s ease;
   cursor: pointer;
+  position: relative;
+}
+
+.caption-item::before {
+  content: '▶';
+  position: absolute;
+  left: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  font-size: 0.7rem;
+  color: #666;
+  transition: opacity 0.2s;
+}
+
+.caption-item:hover::before {
+  opacity: 0.3;
 }
 
 .caption-item:hover {
@@ -153,14 +171,36 @@
   border-radius: 2px;
   transition: background-color 0.2s;
   cursor: pointer;
+  position: relative;
 }
 
 .caption-word:hover {
   background: rgba(255, 255, 255, 0.1);
+  color: #60a5fa;
+}
+
+.caption-word:hover::after {
+  content: '💾';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  background: #333;
+  padding: 2px 4px;
+  border-radius: 3px;
+  white-space: nowrap;
 }
 
 .caption-item.active .caption-word:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+.caption-duration {
+  font-size: 0.7rem;
+  color: #666;
+  margin-left: 0.5rem;
+  font-weight: normal;
 }
 
 /* Loading and Error States */
@@ -201,23 +241,23 @@
     gap: 0.5rem;
     padding: 0.5rem;
   }
-  
+
   .player-nav {
     padding: 1rem;
   }
-  
+
   .video-title {
     font-size: 1rem;
   }
-  
+
   .caption-section {
     max-height: 40vh;
   }
-  
+
   .caption-header {
     padding: 0.75rem;
   }
-  
+
   .caption-item {
     padding: 0.5rem;
   }
@@ -228,7 +268,7 @@
   .video-player-layout {
     grid-template-columns: 1.5fr 1fr;
   }
-  
+
   .player-nav {
     padding: 1rem 1.5rem;
   }

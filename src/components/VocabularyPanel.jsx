@@ -1,0 +1,486 @@
+import React, { useState, useEffect, useRef } from "react";
+import "./VocabularyPanel.css";
+
+const VocabularyPanel = ({ vocabularyData, isOpen, onClose }) => {
+  const [activeTab, setActiveTab] = useState("definition");
+  const [audioPlaying, setAudioPlaying] = useState(false);
+  const [playingAudioIndex, setPlayingAudioIndex] = useState(null);
+  const audioRef = useRef(null);
+  const modalRef = useRef(null);
+
+  // Handle escape key and outside clicks
+  useEffect(() => {
+    const handleKeydown = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    const handleClickOutside = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeydown);
+      document.addEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "hidden"; // Prevent body scroll
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeydown);
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen, onClose]);
+
+  // Reset state when panel opens
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab("definition");
+      setAudioPlaying(false);
+      setPlayingAudioIndex(null);
+    }
+  }, [isOpen, vocabularyData?.word]);
+
+  // Enhanced audio playback for multiple pronunciations
+  const playAudio = async (audioUrl, phoneticIndex) => {
+    if (!audioUrl || playingAudioIndex === phoneticIndex) return;
+
+    try {
+      setPlayingAudioIndex(phoneticIndex);
+      setAudioPlaying(true);
+
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+
+      audioRef.current = new Audio(audioUrl);
+      audioRef.current.onended = () => {
+        setAudioPlaying(false);
+        setPlayingAudioIndex(null);
+      };
+      audioRef.current.onerror = () => {
+        setAudioPlaying(false);
+        setPlayingAudioIndex(null);
+        console.error("Audio playback failed");
+      };
+
+      await audioRef.current.play();
+    } catch (error) {
+      console.error("Audio playback error:", error);
+      setAudioPlaying(false);
+      setPlayingAudioIndex(null);
+    }
+  };
+
+  // Handle audio playback (backward compatibility)
+  const playPronunciation = async () => {
+    const audioUrl = vocabularyData?.definition?.audio;
+    if (!audioUrl || audioPlaying) return;
+
+    try {
+      setAudioPlaying(true);
+
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+
+      audioRef.current = new Audio(audioUrl);
+      audioRef.current.onended = () => setAudioPlaying(false);
+      audioRef.current.onerror = () => {
+        setAudioPlaying(false);
+        console.error("Audio playback failed");
+      };
+
+      await audioRef.current.play();
+    } catch (error) {
+      console.error("Audio playback error:", error);
+      setAudioPlaying(false);
+    }
+  };
+
+  // Format pronunciation display
+  const formatPhonetic = (phonetic) => {
+    if (!phonetic) return "";
+    return phonetic.startsWith("/") && phonetic.endsWith("/")
+      ? phonetic
+      : `/${phonetic}/`;
+  };
+
+  if (!isOpen || !vocabularyData) {
+    return null;
+  }
+
+  return (
+    <div className="vocabulary-panel-overlay">
+      <div className="vocabulary-panel" ref={modalRef}>
+        {/* Header */}
+        <div className="vocabulary-header">
+          <div className="vocabulary-title">
+            <h2 className="vocabulary-word">
+              {vocabularyData.definition?.word || vocabularyData.word}
+            </h2>
+            {vocabularyData.definition?.phonetic && (
+              <div className="vocabulary-pronunciation">
+                <span className="phonetic-text">
+                  {formatPhonetic(vocabularyData.definition.phonetic)}
+                </span>
+                {vocabularyData.definition?.audio && (
+                  <button
+                    className={`audio-btn ${audioPlaying ? "playing" : ""}`}
+                    onClick={playPronunciation}
+                    disabled={audioPlaying}
+                    title="Play pronunciation"
+                  >
+                    {audioPlaying ? "🔊" : "🔈"}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+          <button className="close-btn" onClick={onClose} title="Close">
+            ✕
+          </button>
+        </div>
+
+        {/* Enhanced Tabs */}
+        <div className="vocabulary-tabs">
+          <button
+            className={`tab ${activeTab === "definition" ? "active" : ""}`}
+            onClick={() => setActiveTab("definition")}
+          >
+            <span className="tab-icon">📖</span>
+            <span className="tab-label">Definition</span>
+          </button>
+          <button
+            className={`tab ${activeTab === "pronunciation" ? "active" : ""}`}
+            onClick={() => setActiveTab("pronunciation")}
+          >
+            <span className="tab-icon">🔊</span>
+            <span className="tab-label">Pronunciation</span>
+          </button>
+          <button
+            className={`tab ${activeTab === "related" ? "active" : ""}`}
+            onClick={() => setActiveTab("related")}
+          >
+            <span className="tab-icon">🔗</span>
+            <span className="tab-label">Related</span>
+          </button>
+          <button
+            className={`tab ${activeTab === "usage" ? "active" : ""}`}
+            onClick={() => setActiveTab("usage")}
+          >
+            <span className="tab-icon">📝</span>
+            <span className="tab-label">Usage</span>
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="vocabulary-content">
+          {/* Enhanced Definition Tab */}
+          {activeTab === "definition" && (
+            <div className="definition-content">
+              {vocabularyData.definition?.meanings?.length > 0
+                ? vocabularyData.definition.meanings.map(
+                    (meaning, meaningIndex) => (
+                      <div key={meaningIndex} className="meaning-section">
+                        <div className="part-of-speech-header">
+                          <span className="part-of-speech-badge">
+                            {meaning.partOfSpeech}
+                          </span>
+
+                          {/* Part-specific synonyms */}
+                          {meaning.synonyms?.length > 0 && (
+                            <div className="mini-synonyms">
+                              Synonyms:{" "}
+                              {meaning.synonyms.slice(0, 3).join(", ")}
+                              {meaning.synonyms.length > 3 && "..."}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* All definitions for this part of speech */}
+                        <div className="definitions-list">
+                          {meaning.definitions.map((def, defIndex) => (
+                            <div key={defIndex} className="definition-item">
+                              <div className="definition-number">
+                                {defIndex + 1}.
+                              </div>
+                              <div className="definition-content">
+                                <p className="definition-text">
+                                  {def.definition}
+                                </p>
+
+                                {def.example && (
+                                  <div className="example-text">
+                                    <strong>Example:</strong>{" "}
+                                    <em>"{def.example}"</em>
+                                  </div>
+                                )}
+
+                                {/* Definition-specific synonyms/antonyms */}
+                                {(def.synonyms?.length > 0 ||
+                                  def.antonyms?.length > 0) && (
+                                  <div className="def-word-relations">
+                                    {def.synonyms?.length > 0 && (
+                                      <span className="def-synonyms">
+                                        Similar: {def.synonyms.join(", ")}
+                                      </span>
+                                    )}
+                                    {def.antonyms?.length > 0 && (
+                                      <span className="def-antonyms">
+                                        Opposite: {def.antonyms.join(", ")}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Part-specific antonyms */}
+                        {meaning.antonyms?.length > 0 && (
+                          <div className="part-antonyms">
+                            <strong>
+                              Antonyms for {meaning.partOfSpeech}:
+                            </strong>{" "}
+                            {meaning.antonyms.join(", ")}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  )
+                : // Fallback to old structure for backward compatibility
+                  vocabularyData.definition?.definitions?.map((def, index) => (
+                    <div key={index} className="definition-item">
+                      <div className="definition-meta">
+                        <span className="part-of-speech">
+                          {def.partOfSpeech}
+                        </span>
+                      </div>
+                      <p className="definition-text">{def.definition}</p>
+                      {def.example && (
+                        <div className="definition-example">
+                          <span className="example-label">Example:</span>
+                          <em>"{def.example}"</em>
+                        </div>
+                      )}
+                      {def.synonyms?.length > 0 && (
+                        <div className="definition-synonyms">
+                          <span className="synonyms-label">Synonyms:</span>
+                          <span className="synonyms-list">
+                            {def.synonyms.join(", ")}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+            </div>
+          )}
+
+          {/*  Pronunciation Tab */}
+          {activeTab === "pronunciation" && (
+            <div className="pronunciation-content">
+              <h4>
+                How to pronounce "
+                {vocabularyData.definition?.word || vocabularyData.word}"
+              </h4>
+
+              {vocabularyData.definition?.phonetics?.length > 0 ? (
+                <div className="phonetics-list">
+                  {vocabularyData.definition.phonetics.map(
+                    (phonetic, index) => (
+                      <div key={index} className="phonetic-item">
+                        <div className="phonetic-text">
+                          {phonetic.text && (
+                            <span className="phonetic-symbols">
+                              {formatPhonetic(phonetic.text)}
+                            </span>
+                          )}
+                          {phonetic.region && (
+                            <span className="phonetic-region">
+                              ({phonetic.region})
+                            </span>
+                          )}
+                        </div>
+
+                        {phonetic.audio && (
+                          <button
+                            className={`audio-play-btn ${playingAudioIndex === index ? "playing" : ""}`}
+                            onClick={() => playAudio(phonetic.audio, index)}
+                            disabled={playingAudioIndex === index}
+                          >
+                            {playingAudioIndex === index ? "⏹️" : "▶️"}
+                            Play {phonetic.region || "Audio"}
+                          </button>
+                        )}
+                      </div>
+                    )
+                  )}
+                </div>
+              ) : (
+                <div className="no-pronunciation">
+                  <p>Limited pronunciation data available</p>
+                  {vocabularyData.definition?.phonetic && (
+                    <div className="fallback-pronunciation">
+                      <span className="phonetic-symbols">
+                        {formatPhonetic(vocabularyData.definition.phonetic)}
+                      </span>
+                      {vocabularyData.definition?.audio && (
+                        <button
+                          className={`audio-play-btn ${audioPlaying ? "playing" : ""}`}
+                          onClick={playPronunciation}
+                          disabled={audioPlaying}
+                        >
+                          {audioPlaying ? "⏹️" : "▶️"} Play Audio
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="pronunciation-tips">
+                <h5>Pronunciation Tips</h5>
+                <ul>
+                  <li>
+                    Listen to different regional pronunciations when available
+                  </li>
+                  <li>Practice with the phonetic symbols</li>
+                  <li>Try saying it along with the audio</li>
+                  <li>Notice differences between regions (UK, US, AU)</li>
+                </ul>
+              </div>
+            </div>
+          )}
+
+          {/*  Related Words Tab */}
+          {activeTab === "related" && (
+            <div className="related-content">
+              {vocabularyData.definition?.globalSynonyms?.length > 0 && (
+                <div className="synonyms-section">
+                  <h4>📗 Synonyms (Similar Words)</h4>
+                  <div className="word-chips">
+                    {vocabularyData.definition.globalSynonyms.map(
+                      (synonym, index) => (
+                        <button
+                          key={index}
+                          className="word-chip synonym"
+                          onClick={() => {
+                            console.log(`TODO: Look up "${synonym}"`);
+                            // TODO: Implement synonym lookup
+                          }}
+                          title={`Look up "${synonym}"`}
+                        >
+                          {synonym}
+                        </button>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {vocabularyData.definition?.globalAntonyms?.length > 0 && (
+                <div className="antonyms-section">
+                  <h4>📕 Antonyms (Opposite Words)</h4>
+                  <div className="word-chips">
+                    {vocabularyData.definition.globalAntonyms.map(
+                      (antonym, index) => (
+                        <button
+                          key={index}
+                          className="word-chip antonym"
+                          onClick={() => {
+                            console.log(`TODO: Look up "${antonym}"`);
+                            // TODO: Implement antonym lookup
+                          }}
+                          title={`Look up "${antonym}"`}
+                        >
+                          {antonym}
+                        </button>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {!vocabularyData.definition?.globalSynonyms?.length &&
+                !vocabularyData.definition?.globalAntonyms?.length && (
+                  <div className="no-related-words">
+                    <p>
+                      No synonyms or antonyms found for "
+                      {vocabularyData.definition?.word || vocabularyData.word}"
+                    </p>
+                    <div className="suggestion">
+                      <p>
+                        💡 Try exploring the definition and usage tabs for
+                        related concepts!
+                      </p>
+                    </div>
+                  </div>
+                )}
+            </div>
+          )}
+
+          {/*  Usage Tab */}
+          {activeTab === "usage" && (
+            <div className="usage-content">
+
+              {/* Context timeline - show surrounding captions */}
+              {(vocabularyData.context?.previous?.length > 0 ||
+                vocabularyData.context?.next?.length > 0) && (
+                <div className="usage-section">
+                  <h4>🕐 Context Timeline</h4>
+                  <div className="context-timeline">
+                    {/* Previous context */}
+                    {vocabularyData.context.previous?.map((caption, index) => (
+                      <div
+                        key={`prev-${index}`}
+                        className="context-item previous"
+                      >
+                        <span className="context-timing">Before:</span>
+                        <span className="context-text">"{caption.text}"</span>
+                      </div>
+                    ))}
+
+                    {/* Current (highlighted) */}
+                    {vocabularyData.context.current && (
+                      <div className="context-item current">
+                        <span className="context-timing">Current:</span>
+                        <span className="context-text highlighted">
+                          "{vocabularyData.context.current.text}"
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Next context */}
+                    {vocabularyData.context.next?.map((caption, index) => (
+                      <div key={`next-${index}`} className="context-item next">
+                        <span className="context-timing">After:</span>
+                        <span className="context-text">"{caption.text}"</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="vocabulary-footer">
+          <button className="action-btn secondary" onClick={onClose}>
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default VocabularyPanel;

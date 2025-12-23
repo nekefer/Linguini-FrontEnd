@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
 function YouTubePlayer({ videoId, onTimeUpdate, onPlayerReady }) {
   const playerRef = useRef(null);
@@ -12,11 +12,11 @@ function YouTubePlayer({ videoId, onTimeUpdate, onPlayerReady }) {
 
     // Load YouTube IFrame API if not already loaded
     if (!window.YT) {
-      const script = document.createElement('script');
-      script.src = 'https://www.youtube.com/iframe_api';
+      const script = document.createElement("script");
+      script.src = "https://www.youtube.com/iframe_api";
       script.async = true;
       document.body.appendChild(script);
-      
+
       window.onYouTubeIframeAPIReady = initPlayer;
     } else if (window.YT.Player) {
       initPlayer();
@@ -28,20 +28,21 @@ function YouTubePlayer({ videoId, onTimeUpdate, onPlayerReady }) {
         playerRef.current.destroy();
       }
 
-      playerRef.current = new window.YT.Player('youtube-player', {
-        height: '100%',
-        width: '100%',
+      playerRef.current = new window.YT.Player("youtube-player", {
+        height: "100%",
+        width: "100%",
         videoId: videoId,
         playerVars: {
           autoplay: 0,
           controls: 1,
           modestbranding: 1,
           rel: 0,
+          origin: window.location.origin,
         },
         events: {
           onReady: handlePlayerReady,
-          onStateChange: handlePlayerStateChange
-        }
+          onStateChange: handlePlayerStateChange,
+        },
       });
     }
 
@@ -64,7 +65,7 @@ function YouTubePlayer({ videoId, onTimeUpdate, onPlayerReady }) {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
-      
+
       intervalRef.current = setInterval(() => {
         if (playerRef.current && playerRef.current.getCurrentTime) {
           const currentTime = playerRef.current.getCurrentTime();
