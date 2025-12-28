@@ -32,12 +32,6 @@ function VideoPlayer({ videoId }) {
     setVocabularyData(null);
   };
 
-  const handleSeekFromVocabulary = (time) => {
-    // Handle seek from vocabulary panel
-    handleSeek(time);
-    // Keep panel open so user can continue exploring
-  };
-
   const handleBackToDashboard = () => {
     navigate({ to: "/dashboard" });
   };
@@ -73,9 +67,9 @@ function VideoPlayer({ videoId }) {
       {/* Vocabulary Panel */}
       <VocabularyPanel
         vocabularyData={vocabularyData}
+        videoId={videoId}
         isOpen={isVocabularyPanelOpen}
         onClose={handleCloseVocabularyPanel}
-        onSeekTo={handleSeekFromVocabulary}
       />
     </div>
   );
