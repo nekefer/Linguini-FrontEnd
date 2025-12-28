@@ -1,12 +1,51 @@
 import React, { useState, useEffect, useRef } from "react";
+import vocabularyService from "../api/vocabulary.js";
 import "./VocabularyPanel.css";
 
-const VocabularyPanel = ({ vocabularyData, isOpen, onClose }) => {
+// Save state configuration
+const SAVE_STATE_CONFIG = {
+  checking: {
+    label: "🔍 Checking...",
+    className: "primary",
+    disabled: true,
+  },
+  saving: {
+    label: "⏳ Saving...",
+    className: "primary",
+    disabled: true,
+  },
+  saved: {
+    label: "✅ Saved!",
+    className: "success",
+    disabled: true,
+  },
+  "already-saved": {
+    label: "✅ Already Saved",
+    className: "success",
+    disabled: true,
+  },
+  error: {
+    label: "❌ Try Again",
+    className: "error",
+    disabled: false,
+  },
+  idle: {
+    label: "💾 Save Word",
+    className: "primary",
+    disabled: false,
+  },
+};
+
+const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState("definition");
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [playingAudioIndex, setPlayingAudioIndex] = useState(null);
   const audioRef = useRef(null);
   const modalRef = useRef(null);
+
+  // Save word functionality
+  const [saveState, setSaveState] = useState("idle"); // 'idle', 'checking', 'already-saved', 'saving', 'saved', 'error'
+  const [saveError, setSaveError] = useState(null);
 
   // Handle escape key and outside clicks
   useEffect(() => {
@@ -41,8 +80,25 @@ const VocabularyPanel = ({ vocabularyData, isOpen, onClose }) => {
       setActiveTab("definition");
       setAudioPlaying(false);
       setPlayingAudioIndex(null);
+      setSaveState("checking");
+      setSaveError(null);
     }
   }, [isOpen, vocabularyData?.word]);
+
+  // Check if word is already saved when panel opens
+  useEffect(() => {
+    if (isOpen && vocabularyData?.word && saveState === "checking") {
+      vocabularyService
+        .isWordSaved(vocabularyData.word)
+        .then((isSaved) => {
+          setSaveState(isSaved ? "already-saved" : "idle");
+        })
+        .catch((error) => {
+          console.error("Failed to check if word is saved:", error);
+          setSaveState("idle"); // Default to allowing save on error
+        });
+    }
+  }, [isOpen, vocabularyData?.word, saveState]);
 
   // Enhanced audio playback for multiple pronunciations
   const playAudio = async (audioUrl, phoneticIndex) => {
@@ -109,6 +165,22 @@ const VocabularyPanel = ({ vocabularyData, isOpen, onClose }) => {
     return phonetic.startsWith("/") && phonetic.endsWith("/")
       ? phonetic
       : `/${phonetic}/`;
+  };
+
+  // Handle save word
+  const handleSaveWord = async () => {
+    try {
+      setSaveState("saving");
+      setSaveError(null);
+
+      await vocabularyService.saveWord(vocabularyData.word, videoId);
+
+      setSaveState("saved");
+    } catch (error) {
+      console.error("Failed to save word:", error);
+      setSaveState("error");
+      setSaveError(error.message);
+    }
   };
 
   if (!isOpen || !vocabularyData) {
@@ -429,7 +501,6 @@ const VocabularyPanel = ({ vocabularyData, isOpen, onClose }) => {
           {/*  Usage Tab */}
           {activeTab === "usage" && (
             <div className="usage-content">
-
               {/* Context timeline - show surrounding captions */}
               {(vocabularyData.context?.previous?.length > 0 ||
                 vocabularyData.context?.next?.length > 0) && (
@@ -467,7 +538,6 @@ const VocabularyPanel = ({ vocabularyData, isOpen, onClose }) => {
                   </div>
                 </div>
               )}
-
             </div>
           )}
         </div>
@@ -477,6 +547,22 @@ const VocabularyPanel = ({ vocabularyData, isOpen, onClose }) => {
           <button className="action-btn secondary" onClick={onClose}>
             Close
           </button>
+
+          {saveError && <div className="error-message">{saveError}</div>}
+
+          {(() => {
+            const { label, className, disabled } =
+              SAVE_STATE_CONFIG[saveState ?? "idle"];
+            return (
+              <button
+                className={`action-btn ${className}`}
+                onClick={handleSaveWord}
+                disabled={disabled}
+              >
+                {label}
+              </button>
+            );
+          })()}
         </div>
       </div>
     </div>

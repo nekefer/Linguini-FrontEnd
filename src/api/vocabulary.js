@@ -1,4 +1,10 @@
+import axios from "axios";
 import dictionaryService from "./dictionary.js";
+
+const API_URL = "http://localhost:8000";
+
+// ✅ Configure axios to send cookies automatically
+axios.defaults.withCredentials = true;
 
 class VocabularyService {
   constructor() {
@@ -124,8 +130,98 @@ class VocabularyService {
     }
   }
 
-  
+  /**
+   * Save a word to user's vocabulary collection
+   * @param {string} word - The word to save (already validated when modal opened)
+   * @param {string} videoId - ID of the video where the word was encountered
+   * @returns {Promise<Object>} Save result
+   */
+  async saveWord(word, videoId) {
+    try {
+      // No validation needed - word is already validated when modal opened
+      const saveData = {
+        word: word.toLowerCase().trim(),
+        video_id: videoId,
+      };
 
+      const response = await axios.post(`${API_URL}/vocabulary/save`, saveData);
+
+      console.log("Word saved successfully:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Save word error:", error);
+      const errorMessage =
+        error.response?.data?.detail || error.message || "Failed to save word";
+      throw new Error(errorMessage);
+    }
+  }
+
+  /**
+   * Check if a word is already saved
+   * @param {string} word - The word to check
+   * @returns {Promise<boolean>} Whether the word is saved
+   */
+  async isWordSaved(word) {
+    try {
+      if (!word) return false;
+
+      const cleanWord = word.toLowerCase().trim();
+      const response = await axios.get(
+        `${API_URL}/vocabulary/check/${encodeURIComponent(cleanWord)}`
+      );
+
+      return response.data.saved || false;
+    } catch (error) {
+      console.error("Check word saved error:", error);
+      return false;
+    }
+  }
+
+  /**
+   * Get user's saved words
+   * @param {number} skip - Number of words to skip
+   * @param {number} limit - Number of words to fetch
+   * @returns {Promise<Object>} List of saved words
+   */
+  async getSavedWords(skip = 0, limit = 100) {
+    try {
+      const response = await axios.get(`${API_URL}/vocabulary/saved`, {
+        params: { skip, limit },
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error("Get saved words error:", error);
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.message ||
+        "Failed to fetch saved words";
+      throw new Error(errorMessage);
+    }
+  }
+
+  /**
+   * Delete a saved word
+   * @param {string} word - The word to delete
+   * @returns {Promise<Object>} Delete result
+   */
+  async deleteSavedWord(word) {
+    try {
+      const cleanWord = word.toLowerCase().trim();
+      const response = await axios.delete(
+        `${API_URL}/vocabulary/${encodeURIComponent(cleanWord)}`
+      );
+
+      return response.data;
+    } catch (error) {
+      console.error("Delete word error:", error);
+      const errorMessage =
+        error.response?.data?.detail ||
+        error.message ||
+        "Failed to delete word";
+      throw new Error(errorMessage);
+    }
+  }
 }
 
 // Export singleton instance

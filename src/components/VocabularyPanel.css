@@ -431,6 +431,7 @@
     border-top: 1px solid #333;
     background: #1a1a1a;
     gap: 12px;
+    flex-wrap: wrap;
 }
 
 .action-btn {
@@ -465,6 +466,29 @@
     background: #3b82f6;
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
+}
+
+.action-btn.success {
+    background: #10b981;
+    color: white;
+}
+
+.action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 0.875rem;
+    padding: 0.5rem;
+    background: #1f2937;
+    border: 1px solid #ef4444;
+    border-radius: 4px;
+    max-width: 200px;
+    text-align: center;
 }
 
 /* Responsive Design */
