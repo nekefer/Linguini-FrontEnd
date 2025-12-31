@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, Link } from "@tanstack/react-router";
 import { useAuth } from "../contexts/AuthContext";
 import { googleLogin } from "../api/auth";
 import { getLastLikedVideo } from "../api/youtube";
@@ -72,10 +72,17 @@ export const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h2>Welcome, {user.first_name}!</h2>
-        <button className="logout-button" onClick={handleLogout}>
-          Logout
-        </button>
+        <div className="header-content">
+          <h2>Welcome, {user.first_name}!</h2>
+          <div className="header-actions">
+            <Link to="/my-vocabulary" className="vocabulary-link">
+              📚 My Vocabulary
+            </Link>
+            <button className="logout-button" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="user-info">
@@ -152,64 +159,66 @@ export const Dashboard = () => {
       </div>
 
       {/* Last Liked Video Section */}
-      <div className="video-section">
-        <h3>Your Last Liked Video</h3>
+      {(user.auth_method === "google" || user.auth_method === "both") && (
+        <div className="video-section">
+          <h3>Your Last Liked Video</h3>
 
-        {videoLoading && (
-          <div className="loading-message">
-            Loading your last liked video...
-          </div>
-        )}
-
-        {videoError && (
-          <div className="error-message">
-            <p>{videoError}</p>
-            {user.auth_method !== "google" && user.auth_method !== "both" && (
-              <button className="google-signin-button" onClick={googleLogin}>
-                Sign in with Google to view YouTube data
-              </button>
-            )}
-          </div>
-        )}
-
-        {lastLikedVideo && (
-          <div className="video-content">
-            {lastLikedVideo.thumbnails?.medium?.url && (
-              <img
-                src={lastLikedVideo.thumbnails.medium.url}
-                alt={lastLikedVideo.title}
-                className="video-thumbnail"
-              />
-            )}
-            <div className="video-details">
-              <h4>{lastLikedVideo.title}</h4>
-              <p className="video-description">
-                {lastLikedVideo.description?.substring(0, 200) ??
-                  "No description"}
-                ...
-              </p>
-              <a
-                href={`https://www.youtube.com/watch?v=${lastLikedVideo.video_id}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="youtube-link"
-              >
-                Watch on YouTube
-              </a>
+          {videoLoading && (
+            <div className="loading-message">
+              Loading your last liked video...
             </div>
-          </div>
-        )}
+          )}
 
-        {!videoLoading && !videoError && !lastLikedVideo && (
-          <p>No liked videos found.</p>
-        )}
+          {videoError && (
+            <div className="error-message">
+              <p>{videoError}</p>
+              {user.auth_method !== "google" && user.auth_method !== "both" && (
+                <button className="google-signin-button" onClick={googleLogin}>
+                  Sign in with Google to view YouTube data
+                </button>
+              )}
+            </div>
+          )}
 
-        {lastLikedVideo && (
-          <button className="refresh-button" onClick={fetchLastLikedVideo}>
-            Refresh
-          </button>
-        )}
-      </div>
+          {lastLikedVideo && (
+            <div className="video-content">
+              {lastLikedVideo.thumbnails?.medium?.url && (
+                <img
+                  src={lastLikedVideo.thumbnails.medium.url}
+                  alt={lastLikedVideo.title}
+                  className="video-thumbnail"
+                />
+              )}
+              <div className="video-details">
+                <h4>{lastLikedVideo.title}</h4>
+                <p className="video-description">
+                  {lastLikedVideo.description?.substring(0, 200) ??
+                    "No description"}
+                  ...
+                </p>
+                <a
+                  href={`https://www.youtube.com/watch?v=${lastLikedVideo.video_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="youtube-link"
+                >
+                  Watch on YouTube
+                </a>
+              </div>
+            </div>
+          )}
+
+          {!videoLoading && !videoError && !lastLikedVideo && (
+            <p>No liked videos found.</p>
+          )}
+
+          {lastLikedVideo && (
+            <button className="refresh-button" onClick={fetchLastLikedVideo}>
+              Refresh
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 };
