@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as MyVocabularyRouteImport } from './routes/my-vocabulary'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
@@ -18,6 +19,11 @@ import { Route as PlayerVideoIdRouteImport } from './routes/player/$videoId'
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MyVocabularyRoute = MyVocabularyRouteImport.update({
+  id: '/my-vocabulary',
+  path: '/my-vocabulary',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/my-vocabulary': typeof MyVocabularyRoute
   '/register': typeof RegisterRoute
   '/player/$videoId': typeof PlayerVideoIdRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/my-vocabulary': typeof MyVocabularyRoute
   '/register': typeof RegisterRoute
   '/player/$videoId': typeof PlayerVideoIdRoute
 }
@@ -60,19 +68,33 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
+  '/my-vocabulary': typeof MyVocabularyRoute
   '/register': typeof RegisterRoute
   '/player/$videoId': typeof PlayerVideoIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dashboard' | '/login' | '/register' | '/player/$videoId'
+  fullPaths:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/my-vocabulary'
+    | '/register'
+    | '/player/$videoId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/register' | '/player/$videoId'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/my-vocabulary'
+    | '/register'
+    | '/player/$videoId'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
     | '/login'
+    | '/my-vocabulary'
     | '/register'
     | '/player/$videoId'
   fileRoutesById: FileRoutesById
@@ -81,6 +103,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
+  MyVocabularyRoute: typeof MyVocabularyRoute
   RegisterRoute: typeof RegisterRoute
   PlayerVideoIdRoute: typeof PlayerVideoIdRoute
 }
@@ -92,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-vocabulary': {
+      id: '/my-vocabulary'
+      path: '/my-vocabulary'
+      fullPath: '/my-vocabulary'
+      preLoaderRoute: typeof MyVocabularyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -129,6 +159,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
+  MyVocabularyRoute: MyVocabularyRoute,
   RegisterRoute: RegisterRoute,
   PlayerVideoIdRoute: PlayerVideoIdRoute,
 }
