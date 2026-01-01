@@ -119,7 +119,9 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
       </div>
 
       <div className={styles.wordMeta}>
-        <span className={styles.saveDate}>Saved {formatDate(wordData.saved_at)}</span>
+        <span className={styles.saveDate}>
+          Saved {formatDate(wordData.saved_at)}
+        </span>
         {wordData.video_id && (
           <span className={styles.videoBadge}>📺 From video</span>
         )}
@@ -156,7 +158,14 @@ const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
 };
 
 // Vocabulary grid component
-const VocabularyGrid = ({ words, onDelete, onViewVideo, onViewDetails, loading, error }) => {
+const VocabularyGrid = ({
+  words,
+  onDelete,
+  onViewVideo,
+  onViewDetails,
+  loading,
+  error,
+}) => {
   if (loading) {
     return (
       <div className={styles.vocabularyLoading}>
@@ -273,7 +282,10 @@ export const MyVocabulary = () => {
 
   // Handle viewing word details
   const handleViewDetails = (word) => {
-    navigate({ to: "/word/$wordId", params: { wordId: encodeURIComponent(word) } });
+    navigate({
+      to: "/word/$wordId",
+      params: { wordId: encodeURIComponent(word) },
+    });
   };
 
   // Handle search (client-side for now)

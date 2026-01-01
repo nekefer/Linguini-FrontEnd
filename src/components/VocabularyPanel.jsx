@@ -278,7 +278,10 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                         {/* All definitions for this part of speech */}
                         <div className={styles.definitionsList}>
                           {meaning.definitions.map((def, defIndex) => (
-                            <div key={defIndex} className={styles.definitionItem}>
+                            <div
+                              key={defIndex}
+                              className={styles.definitionItem}
+                            >
                               <div className={styles.definitionNumber}>
                                 {defIndex + 1}.
                               </div>
@@ -344,7 +347,9 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                       )}
                       {def.synonyms?.length > 0 && (
                         <div className={styles.definitionSynonyms}>
-                          <span className={styles.synonymsLabel}>Synonyms:</span>
+                          <span className={styles.synonymsLabel}>
+                            Synonyms:
+                          </span>
                           <span className={styles.synonymsList}>
                             {def.synonyms.join(", ")}
                           </span>
@@ -514,15 +519,21 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
                         className={`${styles.contextItem} ${styles.previous}`}
                       >
                         <span className={styles.contextTiming}>Before:</span>
-                        <span className={styles.contextText}>"{caption.text}"</span>
+                        <span className={styles.contextText}>
+                          "{caption.text}"
+                        </span>
                       </div>
                     ))}
 
                     {/* Current (highlighted) */}
                     {vocabularyData.context.current && (
-                      <div className={`${styles.contextItem} ${styles.current}`}>
+                      <div
+                        className={`${styles.contextItem} ${styles.current}`}
+                      >
                         <span className={styles.contextTiming}>Current:</span>
-                        <span className={`${styles.contextText} ${styles.highlighted}`}>
+                        <span
+                          className={`${styles.contextText} ${styles.highlighted}`}
+                        >
                           "{vocabularyData.context.current.text}"
                         </span>
                       </div>
@@ -530,9 +541,14 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
 
                     {/* Next context */}
                     {vocabularyData.context.next?.map((caption, index) => (
-                      <div key={`next-${index}`} className={`${styles.contextItem} ${styles.next}`}>
+                      <div
+                        key={`next-${index}`}
+                        className={`${styles.contextItem} ${styles.next}`}
+                      >
                         <span className={styles.contextTiming}>After:</span>
-                        <span className={styles.contextText}>"{caption.text}"</span>
+                        <span className={styles.contextText}>
+                          "{caption.text}"
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -544,7 +560,10 @@ const VocabularyPanel = ({ vocabularyData, videoId, isOpen, onClose }) => {
 
         {/* Footer */}
         <div className={styles.vocabularyFooter}>
-          <button className={`${styles.actionBtn} ${styles.secondary}`} onClick={onClose}>
+          <button
+            className={`${styles.actionBtn} ${styles.secondary}`}
+            onClick={onClose}
+          >
             Close
           </button>
 
