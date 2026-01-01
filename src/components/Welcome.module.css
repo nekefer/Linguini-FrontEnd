@@ -1,77 +1,77 @@
 /* Basic Welcome Styles */
-.welcome-container {
+.welcomeContainer {
     min-height: 100vh;
     padding: 40px 20px;
     text-align: center;
 }
 
-.hero-section {
+.heroSection {
     max-width: 800px;
     margin: 0 auto;
     padding: 40px 0;
 }
 
-.hero-content {
+.heroContent {
     margin-bottom: 40px;
 }
 
-.hero-text {
+.heroText {
     margin-bottom: 30px;
 }
 
-.hero-title {
+.heroTitle {
     font-size: 2.5rem;
     margin-bottom: 20px;
 }
 
-.hero-subtitle {
+.heroSubtitle {
     font-size: 1.2rem;
     margin-bottom: 30px;
     color: #666;
 }
 
-.hero-buttons {
+.heroButtons {
     margin-bottom: 40px;
 }
 
-.hero-buttons button {
+.heroButtons button {
     margin: 0 10px 10px 0;
     padding: 12px 24px;
 }
 
-.hero-features {
+.heroFeatures {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 30px;
     margin-top: 40px;
 }
 
-.feature-card {
+.featureCard {
     padding: 20px;
     border: 1px solid #ddd;
     background: white;
 }
 
-.feature-card h3 {
+.featureCard h3 {
     margin-bottom: 15px;
 }
 
-.feature-card p {
+.featureCard p {
     color: #666;
     line-height: 1.5;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .hero-title {
+    .heroTitle {
         font-size: 2rem;
     }
 
-    .hero-subtitle {
+    .heroSubtitle {
         font-size: 1rem;
     }
 
-    .hero-buttons button {
+    .heroButtons button {
         display: block;
         width: 100%;
         margin: 0 0 10px 0;
