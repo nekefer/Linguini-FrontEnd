@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import vocabularyService from "../api/vocabulary.js";
 import dictionaryService from "../api/dictionary.js";
-import "./MyVocabulary.css";
+import styles from "./MyVocabulary.module.css";
 
 const WORDS_PER_PAGE = 20;
 
@@ -14,28 +14,28 @@ const VocabularyControls = ({
   onSortChange,
   totalWords,
 }) => (
-  <div className="vocabulary-controls">
-    <div className="vocabulary-stats">
+  <div className={styles.vocabularyControls}>
+    <div className={styles.vocabularyStats}>
       <h3>📚 My Vocabulary</h3>
-      <p className="stats-text">{totalWords} words saved</p>
+      <p className={styles.statsText}>{totalWords} words saved</p>
     </div>
 
-    <div className="controls-section">
-      <div className="search-section">
+    <div className={styles.controlsSection}>
+      <div className={styles.searchSection}>
         <input
           type="text"
           placeholder="Search your vocabulary..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="search-input"
+          className={styles.searchInput}
         />
-        <span className="search-icon">🔍</span>
+        <span className={styles.searchIcon}>🔍</span>
       </div>
 
       <select
         value={sortBy}
         onChange={(e) => onSortChange(e.target.value)}
-        className="sort-select"
+        className={styles.sortSelect}
       >
         <option value="date_desc">Newest First</option>
         <option value="date_asc">Oldest First</option>
@@ -47,10 +47,9 @@ const VocabularyControls = ({
 );
 
 // Individual word card component
-const WordCard = ({ wordData, onDelete, onViewVideo }) => {
+const WordCard = ({ wordData, onDelete, onViewVideo, onViewDetails }) => {
   const [definition, setDefinition] = useState(null);
   const [loadingDefinition, setLoadingDefinition] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
 
   const loadDefinition = async () => {
     if (definition || loadingDefinition) return;
@@ -96,13 +95,13 @@ const WordCard = ({ wordData, onDelete, onViewVideo }) => {
   };
 
   return (
-    <div className="word-card">
-      <div className="word-header">
-        <h3 className="word-title">{wordData.word}</h3>
-        <div className="word-actions">
+    <div className={styles.wordCard}>
+      <div className={styles.wordHeader}>
+        <h3 className={styles.wordTitle}>{wordData.word}</h3>
+        <div className={styles.wordActions}>
           {wordData.video_id && (
             <button
-              className="btn-icon video-btn"
+              className={`${styles.btnIcon} ${styles.videoBtn}`}
               onClick={handleViewVideo}
               title="View in video"
             >
@@ -110,7 +109,7 @@ const WordCard = ({ wordData, onDelete, onViewVideo }) => {
             </button>
           )}
           <button
-            className="btn-icon delete-btn"
+            className={`${styles.btnIcon} ${styles.deleteBtn}`}
             onClick={handleDelete}
             title="Delete word"
           >
@@ -119,71 +118,58 @@ const WordCard = ({ wordData, onDelete, onViewVideo }) => {
         </div>
       </div>
 
-      <div className="word-meta">
-        <span className="save-date">Saved {formatDate(wordData.saved_at)}</span>
+      <div className={styles.wordMeta}>
+        <span className={styles.saveDate}>
+          Saved {formatDate(wordData.saved_at)}
+        </span>
         {wordData.video_id && (
-          <span className="video-badge">📺 From video</span>
+          <span className={styles.videoBadge}>📺 From video</span>
         )}
       </div>
 
-      <div className="word-content">
+      <div className={styles.wordContent}>
         {loadingDefinition ? (
-          <div className="definition-loading">Loading definition...</div>
+          <div className={styles.definitionLoading}>Loading definition...</div>
         ) : definition ? (
-          <div className="definition-preview">
+          <div className={styles.definitionPreview}>
             <p>{getDefinitionPreview()}</p>
             {definition.phonetic && (
-              <span className="phonetic">
+              <span className={styles.phonetic}>
                 {definition.phonetic.startsWith("/")
                   ? definition.phonetic
                   : `/${definition.phonetic}/`}
               </span>
             )}
             <button
-              className="details-toggle"
-              onClick={() => setShowDetails(!showDetails)}
+              className={styles.detailsToggle}
+              onClick={() => onViewDetails(wordData.word)}
             >
-              {showDetails ? "Show Less" : "Show More"}
+              View Details →
             </button>
           </div>
         ) : (
-          <button className="load-definition-btn" onClick={loadDefinition}>
+          <button className={styles.loadDefinitionBtn} onClick={loadDefinition}>
             Show Definition
           </button>
         )}
       </div>
-
-      {/* {showDetails && definition && !definition.error && (
-        <div className="word-details">
-          {definition.meanings?.map((meaning, index) => (
-            <div key={index} className="meaning-section">
-              <span className="part-of-speech">{meaning.partOfSpeech}</span>
-              <div className="definitions">
-                {meaning.definitions.slice(0, 2).map((def, defIndex) => (
-                  <div key={defIndex} className="definition-item">
-                    <p>{def.definition}</p>
-                    {def.example && (
-                      <p className="example">
-                        <em>"{def.example}"</em>
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      )} */}
     </div>
   );
 };
 
 // Vocabulary grid component
-const VocabularyGrid = ({ words, onDelete, onViewVideo, loading, error }) => {
+const VocabularyGrid = ({
+  words,
+  onDelete,
+  onViewVideo,
+  onViewDetails,
+  loading,
+  error,
+}) => {
   if (loading) {
     return (
-      <div className="vocabulary-loading">
-        <div className="loading-spinner"></div>
+      <div className={styles.vocabularyLoading}>
+        <div className={styles.loadingSpinner}></div>
         <p>Loading your vocabulary...</p>
       </div>
     );
@@ -191,11 +177,11 @@ const VocabularyGrid = ({ words, onDelete, onViewVideo, loading, error }) => {
 
   if (error) {
     return (
-      <div className="vocabulary-error">
+      <div className={styles.vocabularyError}>
         <h3>❌ Error Loading Vocabulary</h3>
         <p>{error}</p>
         <button
-          className="btn-primary"
+          className={styles.btnPrimary}
           onClick={() => window.location.reload()}
         >
           Try Again
@@ -206,11 +192,11 @@ const VocabularyGrid = ({ words, onDelete, onViewVideo, loading, error }) => {
 
   if (words.length === 0) {
     return (
-      <div className="vocabulary-empty">
-        <div className="empty-icon">📚</div>
+      <div className={styles.vocabularyEmpty}>
+        <div className={styles.emptyIcon}>📚</div>
         <h3>No saved words yet</h3>
         <p>Start watching videos and saving words to build your vocabulary!</p>
-        <Link to="/dashboard" className="btn-primary">
+        <Link to="/dashboard" className={styles.btnPrimary}>
           Browse Videos
         </Link>
       </div>
@@ -218,13 +204,14 @@ const VocabularyGrid = ({ words, onDelete, onViewVideo, loading, error }) => {
   }
 
   return (
-    <div className="vocabulary-grid">
+    <div className={styles.vocabularyGrid}>
       {words.map((word) => (
         <WordCard
           key={word.id}
           wordData={word}
           onDelete={onDelete}
           onViewVideo={onViewVideo}
+          onViewDetails={onViewDetails}
         />
       ))}
     </div>
@@ -293,6 +280,14 @@ export const MyVocabulary = () => {
     navigate({ to: "/player/$videoId", params: { videoId } });
   };
 
+  // Handle viewing word details
+  const handleViewDetails = (word) => {
+    navigate({
+      to: "/word/$wordId",
+      params: { wordId: encodeURIComponent(word) },
+    });
+  };
+
   // Handle search (client-side for now)
   const getFilteredWords = () => {
     let filtered = [...savedWords];
@@ -333,7 +328,7 @@ export const MyVocabulary = () => {
   const filteredWords = getFilteredWords();
 
   return (
-    <div className="vocabulary-page">
+    <div className={styles.vocabularyPage}>
       <VocabularyControls
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
@@ -346,12 +341,13 @@ export const MyVocabulary = () => {
         words={filteredWords}
         onDelete={handleDeleteWord}
         onViewVideo={handleViewVideo}
+        onViewDetails={handleViewDetails}
         loading={loading}
         error={error}
       />
 
       {searchTerm && (
-        <div className="search-results-info">
+        <div className={styles.searchResultsInfo}>
           Found {filteredWords.length} word(s) matching "{searchTerm}"
         </div>
       )}
