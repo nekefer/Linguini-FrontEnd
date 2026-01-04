@@ -1,0 +1,377 @@
+/* Word Detail - Minimalist Design inspired by Readlang & Brilliant */
+
+.wordPage {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f8f9fc 0%, #eef1f8 100%);
+    color: black;
+    padding: 2rem 1rem;
+}
+
+.wordContainer {
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+/* Loading & Error States */
+.loadingState,
+.errorState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loadingState p {
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+.errorIcon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.errorState h2 {
+    color: #1f2937;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
+}
+
+.errorState p {
+    color: #6b7280;
+    margin: 0 0 1.5rem;
+}
+
+.errorState button {
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.errorState button:hover {
+    background: #4f46e5;
+}
+
+/* Navigation */
+.wordNav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.navBack {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: none;
+    color: #6366f1;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0.5rem 0;
+    transition: opacity 0.2s;
+}
+
+.navBack:hover {
+    opacity: 0.8;
+}
+
+.navBack span {
+    font-size: 1.1rem;
+}
+
+.navRemove {
+    background: none;
+    border: 1px solid #fca5a5;
+    color: #ef4444;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.navRemove:hover {
+    background: #fef2f2;
+}
+
+/* Cards */
+.wordCard {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+/* Header Card */
+.wordHeaderCard {
+    padding: 2rem;
+    text-align: center;
+}
+
+.wordMain h1 {
+    font-size: 2.75rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0 0 0.75rem;
+    letter-spacing: -0.02em;
+}
+
+.wordMeta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.phonetic {
+    color: #6b7280;
+    font-size: 1.15rem;
+    font-style: italic;
+}
+
+.audioBtn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #f3f4f6;
+    color: #6366f1;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.audioBtn:hover:not(:disabled) {
+    background: #e5e7eb;
+}
+
+.audioBtn.playing {
+    background: #6366f1;
+    color: white;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Meaning Cards */
+.meaningCard {
+    padding: 1.5rem 1.75rem;
+}
+
+.posBadge {
+    display: inline-block;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    padding: 0.35rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: lowercase;
+    margin-bottom: 1rem;
+}
+
+.definitions {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+
+.definitions li {
+    margin-bottom: 1rem;
+    color: #374151;
+}
+
+.definitions li::marker {
+    color: #6366f1;
+    font-weight: 600;
+}
+
+.defText {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin: 0;
+    color: #1f2937;
+}
+
+.defExample {
+    color: #6b7280;
+    font-size: 0.95rem;
+    font-style: italic;
+    margin: 0.5rem 0 0;
+    padding-left: 0.75rem;
+    border-left: 2px solid #e5e7eb;
+}
+
+/* Word Links */
+.wordLinksSection {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.linksLabel {
+    display: block;
+    color: #9ca3af;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.wordLinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.wordLinks button {
+    background: #f3f4f6;
+    border: none;
+    color: #6366f1;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.wordLinks button:hover {
+    background: #e5e7eb;
+}
+
+.wordLinks.antonyms button {
+    color: #ec4899;
+}
+
+/* Related Card */
+.relatedCard h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem;
+}
+
+.relatedGroup {
+    margin-bottom: 1rem;
+}
+
+.relatedGroup:last-child {
+    margin-bottom: 0;
+}
+
+.relatedLabel {
+    display: block;
+    color: #9ca3af;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.relatedChips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.relatedChips button {
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    border: none;
+    color: #4f46e5;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.relatedChips button:hover {
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    transform: translateY(-1px);
+}
+
+.relatedChips.opposite button {
+    background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+    color: #db2777;
+}
+
+.relatedChips.opposite button:hover {
+    background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .wordPage {
+        padding: 1rem 0.75rem;
+    }
+
+    .wordCard {
+        border-radius: 12px;
+        padding: 1.25rem;
+    }
+
+    .wordHeaderCard {
+        padding: 1.5rem;
+    }
+
+    .wordMain h1 {
+        font-size: 2rem;
+    }
+
+    .phonetic {
+        font-size: 1rem;
+    }
+
+    .meaningCard {
+        padding: 1.25rem;
+    }
+
+    .defText {
+        font-size: 1rem;
+    }
+}
